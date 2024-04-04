@@ -10,9 +10,10 @@ public class DesktopLauncher {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setForegroundFPS(60);
 		config.setTitle("ImageEditor");
-		System.out.println("Project made by: Emely and Benita" );
-		new Lwjgl3Application(new ImageEditor(), config);
+		System.out.println("Project made by: Emely & Benita" );
 		config.setWindowedMode(584, 480);
+		new Lwjgl3Application(new ImageEditor(), config);
+		
 
 	}
 }
