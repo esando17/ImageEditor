@@ -24,6 +24,17 @@ public class ImageEditor extends ApplicationAdapter {
 	
 	public void create () {
 		Instance = this; 
+		new ImageInputOutput();
+		//I had to add the absolute path, It wouldn't save into the assets folder 
+		Pixmap editMap = ImageInputOutput.Instance.loadImage("/Users/emelysandoval/Documents/ImageEditor/assets/blackbuck.bmp");
+		
+		
+		// Check if editMap loaded successfully
+	    if (editMap == null) {
+	        Gdx.app.error("ImageEditor", "Failed to load the image.");
+	        return;
+	    }
+	    
 		InputManager inputManager = new InputManager();
 		Gdx.input.setInputProcessor(inputManager);
 		batch = new SpriteBatch();
@@ -31,6 +42,8 @@ public class ImageEditor extends ApplicationAdapter {
 		
 		Vector2 editWindowSize = new Vector2(500, ScreenSize.y - 50);
 		_editWindow = new EditWindow(editWindowSize, new Vector2(ScreenSize.x - editWindowSize.x, 0), Color.GRAY);
+		
+		_editWindow.DoodleTexture = new Texture(editMap);
 		
 		Button button = new Button(new Vector2(50,50), Vector2.Zero, Color.YELLOW);
 		CollisionManager collisionManager = new CollisionManager();

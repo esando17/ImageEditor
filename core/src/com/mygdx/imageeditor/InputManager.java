@@ -27,11 +27,9 @@ public class InputManager implements InputProcessor{
 	public boolean keyTyped(char character) {return false;}
 	
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		System.out.println("checking touchdownß"); 
 
 		Vector2 vector2 = new Vector2(screenX, ImageEditor.Instance.ScreenSize.y - screenY); 
 		IClickable collision = CollisionManager.Instance.getClicked(vector2);
-		System.out.println("checking collison value" + collision); 
 
 		if(collision != null) {
 		collision.onClickDown(vector2); 
@@ -52,7 +50,6 @@ public class InputManager implements InputProcessor{
 	public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {return false;}
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
 		mouseMoved(screenX, screenY); 
-		System.out.println("checking cl val:" + _currentlyClicked); 
 
 		if(_currentlyClicked != null) {
 			_currentlyClicked.onClickDragged(new Vector2(screenX, ImageEditor.Instance.ScreenSize.y - screenY));
