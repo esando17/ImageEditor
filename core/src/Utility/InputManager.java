@@ -1,4 +1,4 @@
-package com.mygdx.imageeditor;
+package Utility;
 import java.io.IOException;
 
 import com.badlogic.gdx.Input.Keys;
@@ -6,7 +6,9 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.mygdx.imageeditor.Button.ButtonState;
+import com.mygdx.buttons.Button;
+import com.mygdx.buttons.Button.ButtonState;
+import com.mygdx.imageeditor.ImageEditor;
 
 public class InputManager implements InputProcessor{
 	public Array<Button> Buttons = new Array<Button>();
@@ -32,7 +34,13 @@ public class InputManager implements InputProcessor{
 		
 		if(_controlPressed && keycode == Keys.S) {
 			System.out.println("YOU PRESSED CONTROL + S!");
-			try {ImageInputOutput.Instance.saveImage("/Users/emelysandoval/Desktop/test.bmp");}
+			// Check if ImageFolderLocation is null
+	        if (ImageInputOutput.Instance.ImageFolderLocation == null) {
+	            System.out.println("ImageFolderLocation is null. Can't save.");
+	            return false;
+	        }
+	       
+			try {ImageInputOutput.Instance.saveImage(ImageInputOutput.Instance.ImageFolderLocation + "/output.bmp");}//check maybe take off /
 			catch (IOException e) {e.printStackTrace();}
 		}
 		if(keycode == Keys.CONTROL_LEFT) {
@@ -82,16 +90,10 @@ public class InputManager implements InputProcessor{
 		
 		if(_currentlyHovered != null && _currentlyHovered != collision ) _currentlyHovered.onHoverExit();
 		if(collision != null)  collision.onHovered();
+		if(collision != _currentlyHovered) _currentlyClicked = null;
 		_currentlyHovered = collision;	
 		return true;
-		
-//		IHoverable collision = CollisionManager.Instance.getCollision(new Vector2(screenX, ImageEditor.Instance.ScreenSize.y - screenY));
-//		if(collision != null) collision.onHovered(); 
-//		if(_currentlyHovered != null && !_currentlyHovered.equals(collision)) {
-//			_currentlyHovered.onHoverExit();
-//		}
-//		_currentlyHovered = collision; 
-//		return true;
+
 		}	
 	public boolean scrolled(float amountX, float amountY) {return false;}
 }
