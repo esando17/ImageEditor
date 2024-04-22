@@ -1,5 +1,6 @@
 package com.mygdx.imageeditor;
 
+import java.io.IOException;
 import java.util.Vector;
 
 //import java.util.Random;
@@ -23,31 +24,23 @@ public class ImageEditor extends ApplicationAdapter {
 	private EditWindow _editWindow; 
 	
 	public void create () {
+		Util.testIntToSignedBytes();
 		Instance = this; 
 		new ImageInputOutput();
 		//I had to add the absolute path, It wouldn't save into the assets folder 
-		Pixmap editMap = ImageInputOutput.Instance.loadImage("/Users/emelysandoval/Documents/ImageEditor/assets/blackbuck.bmp");
+		//Pixmap editMap = ImageInputOutput.Instance.loadImage("/Users/emelysandoval/Documents/ImageEditor/assets/blackbuck.bmp");
 		
-		
-		// Check if editMap loaded successfully
-	    if (editMap == null) {
-	        Gdx.app.error("ImageEditor", "Failed to load the image.");
-	        return;
-	    }
-	    
+	
 		InputManager inputManager = new InputManager();
 		Gdx.input.setInputProcessor(inputManager);
 		batch = new SpriteBatch();
 		ScreenSize = new Vector2(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		
 		Vector2 editWindowSize = new Vector2(500, ScreenSize.y - 50);
-		_editWindow = new EditWindow(editWindowSize, new Vector2(ScreenSize.x - editWindowSize.x, 0), Color.GRAY);
-		
-		_editWindow.DoodleTexture = new Texture(editMap);
+		_editWindow = new EditWindow(editWindowSize, new Vector2(ScreenSize.x - editWindowSize.x, 0));//), editTexture
 		
 		Button button = new Button(new Vector2(50,50), Vector2.Zero, Color.YELLOW);
 		CollisionManager collisionManager = new CollisionManager();
-	    //Rec2D collisionRec = collisionManager.getCollision(ScreenSize);
 		}
 	    
 		
@@ -66,6 +59,11 @@ public class ImageEditor extends ApplicationAdapter {
 		}
 	public void dispose () {
 		batch.dispose();
+	}
+	public void filesImported(String[] filePaths) {
+		Pixmap map = ImageInputOutput.Instance.loadImage(filePaths[0]);
+		if(map == null) return;
+		_editWindow.RecTexture = new Texture(map);
 	}
 
 }

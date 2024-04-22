@@ -1,4 +1,7 @@
 package com.mygdx.imageeditor;
+import java.io.IOException;
+
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector2;
@@ -21,8 +24,24 @@ public class InputManager implements InputProcessor{
 	public InputManager(){
 		Instance = this; 
 	}
-	public boolean keyDown(int keycode) {return false;}
+	private boolean _controlPressed;
+	public boolean keyDown(int keycode) {
+		if(keycode == Keys.CONTROL_LEFT) {
+			System.out.println("YOU PRESSED CONTROL!");
+		}
+		
+		if(_controlPressed && keycode == Keys.S) {
+			System.out.println("YOU PRESSED CONTROL + S!");
+			try {ImageInputOutput.Instance.saveImage("/Users/emelysandoval/Desktop/test.bmp");}
+			catch (IOException e) {e.printStackTrace();}
+		}
+		if(keycode == Keys.CONTROL_LEFT) {
+			_controlPressed = true;
+		}
+		return false;
+	}
 	public boolean keyUp(int keycode) {
+		if(keycode == Keys.CONTROL_LEFT) _controlPressed = false;
 		return false;}
 	public boolean keyTyped(char character) {return false;}
 	
@@ -44,7 +63,7 @@ public class InputManager implements InputProcessor{
 //		Button collision = CollisionManager.Instance.getCollision(vector2);
 //		if(_currentlyHovered != null) _currentlyHovered.onClickUp(vector2); 
  		if(_currentlyClicked != null)_currentlyClicked.onClickUp(vector2); 
-		return false;
+		return true;//ch5 false b4
 		}
 	
 	public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {return false;}
@@ -53,9 +72,8 @@ public class InputManager implements InputProcessor{
 
 		if(_currentlyClicked != null) {
 			_currentlyClicked.onClickDragged(new Vector2(screenX, ImageEditor.Instance.ScreenSize.y - screenY));
-			System.out.println("checking if check"); 
 		}
-		return false;}
+		return true;}//ch5 faslse b4
 	
 	
 	public boolean mouseMoved(int screenX, int screenY) {

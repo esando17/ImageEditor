@@ -1,11 +1,18 @@
 package com.mygdx.imageeditor;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.math.Vector2;
 
 public class ImageInputOutput {
 	public static ImageInputOutput Instance;
+    private byte[] _fileHeader; // Private instance variable to hold the file header
+    private Pixmap _pixels;
+
 	public ImageInputOutput() {
 	Instance = this;
 	}
@@ -29,6 +36,12 @@ public class ImageInputOutput {
 		int width = Util.bytesToInt(widthBytes);//;;/
 		int height = Util.bytesToInt(heightBytes);//;;/
 		int bytesPerPixel = Util.bytesToInt(bitsPerPixel) / 8;
+		
+		_fileHeader = new byte[startPoint]; // Allocate _fileHeader with size startPoint
+		for(int i = 0; i < startPoint; i++) {
+		    _fileHeader[i] = fileIntData[i]; //filling out _fileHeader w/ first startPoint bites 
+		}
+
 		
 		if(bytesPerPixel != 3) {
 			System.out.println("Unsupported image pixel format. Incorrect bits per pixel"); 
@@ -62,9 +75,48 @@ public class ImageInputOutput {
                 y--;
             }
 		}
+	    _pixels = pixels; // Set _pixels equal to the local Pixmap variable pixels
 		return pixels;
 		}
 	
+	public void saveImage(String filePath) throws IOException {
+		FileOutputStream output = new FileOutputStream(filePath);
+		byte[] color;
+		byte[] colorData = new byte[_pixels.getWidth() * _pixels.getHeight() * 3];
+		//Pixmap doodle = EditWindow.Instance.DoodleMap;
+		Pixmap doodle = Util.scalePixmap(EditWindow.Instance.DoodleMap, new Vector2(_pixels.getWidth(), _pixels.getHeight()));
+		int colorIndex = 0;
+		for(int y = doodle.getHeight() - 1; y >= 0; y--) {
+			for(int x = 0; x < doodle.getWidth(); x++) {
+				color = Util.intToSignedBytes(_pixels.getPixel(x, y));//switchinf to doodle saves the doodles 
+				if(color[3] != -1) {colorIndex += 3; continue; }
+				colorData[colorIndex] = color[2];
+				colorData[colorIndex + 1] = color[1];
+				colorData[colorIndex + 2] = color[0];
+				colorIndex += 3;
+				//System.out.println(_pixels.getHeight() + " " + _pixels.getWidth() + " \n"
+						//+ doodle.getHeight() + " " + doodle.getWidth());
+			}
+		}
+		
+		output.write(_fileHeader);
+		colorIndex = 0;
+
+		for(int y = doodle.getHeight() - 1; y >= 0; y--) {
+			for(int x = 0; x < doodle.getWidth(); x++) {
+				color = Util.intToSignedBytes(doodle.getPixel(x, y));//switchinf to doodle saves the doodles 
+				if(color[3] != -1) {colorIndex += 3; continue; }
+				colorData[colorIndex] = color[2];
+				colorData[colorIndex + 1] = color[1];
+				colorData[colorIndex + 2] = color[0];
+				colorIndex += 3;
+//				System.out.println(_pixels.getHeight() + " " + _pixels.getWidth() + " \n"
+//						+ doodle.getHeight() + " " + doodle.getWidth());
+			}
+		}
+		output.write(colorData);
+		output.close();
+	}
 
 
 }
